@@ -1,4 +1,6 @@
 var worker = {
+	body: [WORK, CARRY, MOVE, MOVE]
+	,
 	run : function(creep) {
 		if (creep.memory.work == null) {
 			creep.memory.work = 0;
