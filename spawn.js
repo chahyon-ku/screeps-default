@@ -1,16 +1,20 @@
-var spawn = {
-	run : function(spawn) {
-		if (spawn.memory.creepNum == null) {
-			spawn.memory.creepNum = 0;
-		} else {
-			if (spawn.memory.spawnCreeps != null) {
-				var body = spawn.memory.spawnCreeps[0];
-				if (!spawn.spawnCreep(body, spawn.name + '-' + spawn.memory.creepNum)) {
-					spawn.memory.creepNum++;
-					spawn.memory.spawnCreeps.shift();
-				}
+module.exports = {
+	run: function(spawn) {
+		if (spawn.my) {
+			this.init(spawn)
+
+			if (spawn.memory.spawn != null) {
+				spawn.spawnCreep(spawn.memory.spawn.body, spawn.memory.spawn.name, spawn.memory.spawn.opts)
 			}
 		}
 	}
+	,
+	init: function(spawn) {
+		if (spawn.memory.init == null) {
+			spawn.memory = null
+			spawn.memory.init = 0
+
+			spawn.room.memory.spawns.push(spawn.id)
+		}
+	}
 }
-module.exports = spawn;

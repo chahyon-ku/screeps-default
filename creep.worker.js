@@ -1,4 +1,4 @@
-var worker = {
+module.exports = {
 	body: [WORK, CARRY, MOVE, MOVE]
 	,
 	run : function(creep) {
@@ -50,4 +50,3 @@ var worker = {
 		}
 	}
 }
-module.exports = worker;
