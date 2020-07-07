@@ -22,10 +22,10 @@ module.exports = {
 					}
 				}
 
-				var name = room.name + '_' + room.memory.creep_num
+				var name = room.name + '_' + type + '_' + room.memory.creep_num
 				if (name in Game.creeps) {
 					room.memory.creep_num++
-					room.name + '_' + room.memory.creep_num
+					name = room.name + '_' + type + '_' + room.memory.creep_num
 				}
 				var opts = {'memory': {'type': type}}
 				var spawn = this.getIdleSpawn(room)
@@ -69,20 +69,14 @@ module.exports = {
 			room.memory.creep_num = 0
 		}
 		if (room.memory.init < room.controller.level) {
-			if (room.controller.level == 1) {
-				room.memory.creep_limit = {'worker': '12'}
-			}
-			if (room.controller.level == 3) {
-				room.memory.init = room.controller.level
-				room.memory.creeps_limit = {'worker': '8'}
-			}
 		}
 	}
 	,
 	update: function(room) {
 		// Creep list
 		for (var i = 0; i < room.memory.creeps.length;) {
-			if (Game.getObjectById(room.memory.creeps[i]) == null) {
+			var creep = Game.getObjectById(room.memory.creeps[i])
+			if (creep == null || creep.ticksToLive < 100) {
 				room.memory.creeps.splice(i, 1)
 			} else {
 				i++
@@ -91,7 +85,8 @@ module.exports = {
 		// Creep type list
 		for (var type in room.memory.creeps_type) {
 			for (var i = 0; i < room.memory.creeps_type[type].length;) {
-				if (Game.getObjectById(room.memory.creeps_type[type][i] == null)) {
+				var creep = Game.getObjectById(room.memory.creeps_type[type][i])
+				if (creep == null || creep.ticksToLive < 100) {
 					room.memory.creeps_type[type].splice(i, 1)
 				} else {
 					i++
@@ -100,10 +95,22 @@ module.exports = {
 		}
 		// Spawn list
 		for (var i = 0; i < room.memory.spawns.length;) {
-			if (Game.getObjectById(room.memory.spawns[i]) == null) {
+			var creep = Game.getObjectById(room.memory.spawns[i])
+			if (creep == null || creep.ticksToLive < 100) {
 				room.memory.spawns.splice(i, 1)
 			} else {
 				i++
+			}
+		}
+		// source harvester list
+		for (var source in room.memory.sources_creeps) {
+			for (var i = 0; i < room.memory.sources_creeps[source].length;) {
+				var creep = Game.getObjectById(room.memory.sources_creeps[source][i])
+				if (creep == null || creep.ticksToLive < 100) {
+					room.memory.sources_creeps[source].splice(i, 1)
+				} else {
+					i++
+				}
 			}
 		}
 	}

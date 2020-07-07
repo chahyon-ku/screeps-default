@@ -15,7 +15,7 @@ module.exports = {
 				var error = spawn.spawnCreep(spawn.memory.spawn.body, spawn.memory.spawn.name, spawn.memory.spawn.opts)
 				if (error == OK || error == ERR_NOT_OWNER || error == ERR_NAME_EXISTS ||
 						error == ERR_INVALID_ARGS || error == ERR_RCL_NOT_ENOUGH) {
-					console.log('[spawns.' + spawn.name + '] ' + this.error_messages[error])
+					console.log('[spawns.' + spawn.name + '.spawnCreep()] ' + this.error_messages[error])
 					spawn.memory.spawn = null
 				}
 			}

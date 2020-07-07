@@ -1,4 +1,5 @@
-var types = {'worker': require('creep.worker')}
+var types = {'worker': require('creep.worker'),
+						 'harvester': require('creep.harvester')}
 
 module.exports = {
 	run : function(creep) {
@@ -6,7 +7,7 @@ module.exports = {
 			this.init(creep)
 
 			if (creep.memory.init != null) {
-				types[creep.memory.type].run(creep)
+				require('creep.' + creep.memory.type).run(creep)
 			}
 		}
 	}
