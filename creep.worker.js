@@ -10,7 +10,7 @@ module.exports = {
 		if (creep.memory.work == 0) {
 			var source = creep.pos.findClosestByPath(FIND_STRUCTURES,
 				{filter: function(s) {
-					return s.structureType == STRUCTURE_CONTAINER
+					return (s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE)
 							&& s.store[RESOURCE_ENERGY] > creep.store.getCapacity()
 				}}
 			);
@@ -60,6 +60,16 @@ module.exports = {
 						{filter: function(s) {
 							return (s.structureType == STRUCTURE_SPAWN
 									|| s.structureType == STRUCTURE_EXTENSION)
+									&& s.energy < s.energyCapacity;
+						}});
+				if (target) {
+					creep.memory.target = target.id;
+					return
+				}
+
+				target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+						{filter: function(s) {
+							return s.structureType == STRUCTURE_TOWER
 									&& s.energy < s.energyCapacity;
 						}});
 				if (target) {

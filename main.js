@@ -1,5 +1,5 @@
 var room = require('room');
-var spawn = require('spawn');
+var structure = require('structure')
 var creep = require('creep');
 
 module.exports.loop = function() {
@@ -7,8 +7,8 @@ module.exports.loop = function() {
 		room.run(Game.rooms[roomName]);
 	}
 
-	for (var spawnName in Game.spawns) {
-		spawn.run(Game.spawns[spawnName]);
+	for (var structure_id in Game.structures) {
+		structure.run(Game.structures[structure_id])
 	}
 
 	for (var creepName in Game.creeps) {

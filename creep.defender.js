@@ -1,5 +1,6 @@
 module.exports = {
-  bodies: [[TOUGH, TOUGH, ATTACK, ATTACK, ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE]]
+  bodies: [[TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK],
+           [TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK]]
   ,
   run: function(creep) {
     var target = creep.pos.findClosestByPath(FIND_CREEPS,
@@ -13,8 +14,7 @@ module.exports = {
         creep.moveTo(target)
       }
     } else {
-      //creep.move(require('lodash').sample([1, 2, 3, 4, 5, 6, 7, 8]))
-      creep.moveTo(new RoomPosition(20, 35, creep.room.name))
+      creep.moveTo(new RoomPosition(25, 25, creep.memory.room))
     }
   }
 }

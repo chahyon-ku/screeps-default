@@ -1,82 +1,51 @@
 module.exports = {
 	run: function(room) {
-		this.init(room)
-
-		this.update(room)
-
-		// Creep Spawn
-		for (var type in room.memory.creeps_limit) {
-			var limit = parseInt(room.memory.creeps_limit[type])
-			if (!room.memory.creeps_type.hasOwnProperty(type) ||
-					room.memory.creeps_type[type].length < limit) {
-				var bodies = require('creep.' + type).bodies
-				var body = []
-				for (var i in bodies) {
-					var cost = 0
-					for (var j in bodies[i]) {
-						cost += BODYPART_COST[bodies[i][j]]
-					}
-					if (cost <= room.energyCapacityAvailable) {
-						body = bodies[i]
-						break;
-					}
-				}
-
-				var name = room.name + '_' + type + '_' + room.memory.creep_num
-				if (name in Game.creeps) {
-					room.memory.creep_num++
-					name = room.name + '_' + type + '_' + room.memory.creep_num
-				}
-				var opts = {'memory': {'type': type}}
-				var spawn = this.getIdleSpawn(room)
-				if (spawn != null) {
-					if (spawn.memory.spawn == null) {
-						spawn.memory.spawn = {'body': body, 'name': name, 'opts': opts}
-					}
-				}
-			}
+		if (room.memory.type != null) {
+			this.init(room)
+			this.update(room)
+			require('room.' + room.memory.type).run(room)
 		}
 	}
 	,
 	init: function(room) {
-		if (room.memory.init == null) {
-			room.memory = null
-			room.memory.init = 0
+			if (room.memory.init == null) {
+				room.memory.init = 0
 
-			// Source list
-			// Sources creeps object
-			room.memory.sources = [];
-			room.memory.sources_creeps = {}
-			var sources = room.find(FIND_SOURCES);
-			for (var source of sources) {
-				room.memory.sources.push(source.id);
-				room.memory.sources_creeps[source.id] = []
+				// Source list
+				// Sources creeps object
+				room.memory.sources = [];
+				room.memory.sources_creeps = {}
+				var sources = room.find(FIND_SOURCES);
+				for (var source of sources) {
+					room.memory.sources.push(source.id);
+					room.memory.sources_creeps[source.id] = []
+				}
+
+				// Creep list
+				room.memory.creeps = []
+
+				// Creep type object
+				room.memory.creeps_type = {}
+
+				// Spawn list
+				room.memory.spawns = [];
+
+				// Creep limit list
+				room.memory.creeps_limit = {}
+
+				// Creep num
+				room.memory.creep_num = 0
+
+				// Structures
+				room.memory.structures = {}
 			}
-
-			// Creep list
-			room.memory.creeps = []
-
-			// Creep type object
-			room.memory.creeps_type = {}
-
-			// Spawn list
-			room.memory.spawns = [];
-
-			// Creep limit list
-			room.memory.creeps_limit = {'worker': '8'}
-
-			// Creep num
-			room.memory.creep_num = 0
-		}
-		if (room.memory.init < room.controller.level) {
-		}
 	}
 	,
 	update: function(room) {
 		// Creep list
 		for (var i = 0; i < room.memory.creeps.length;) {
 			var creep = Game.getObjectById(room.memory.creeps[i])
-			if (creep == null || creep.ticksToLive < 100) {
+			if (is_dead(creep)) {
 				room.memory.creeps.splice(i, 1)
 			} else {
 				i++
@@ -86,7 +55,7 @@ module.exports = {
 		for (var type in room.memory.creeps_type) {
 			for (var i = 0; i < room.memory.creeps_type[type].length;) {
 				var creep = Game.getObjectById(room.memory.creeps_type[type][i])
-				if (creep == null || creep.ticksToLive < 100) {
+				if (is_dead(creep)) {
 					room.memory.creeps_type[type].splice(i, 1)
 				} else {
 					i++
@@ -96,7 +65,7 @@ module.exports = {
 		// Spawn list
 		for (var i = 0; i < room.memory.spawns.length;) {
 			var creep = Game.getObjectById(room.memory.spawns[i])
-			if (creep == null || creep.ticksToLive < 100) {
+			if (is_dead(creep)) {
 				room.memory.spawns.splice(i, 1)
 			} else {
 				i++
@@ -106,25 +75,22 @@ module.exports = {
 		for (var source in room.memory.sources_creeps) {
 			for (var i = 0; i < room.memory.sources_creeps[source].length;) {
 				var creep = Game.getObjectById(room.memory.sources_creeps[source][i])
-				if (creep == null || creep.ticksToLive < 100) {
+				if (is_dead(creep)) {
 					room.memory.sources_creeps[source].splice(i, 1)
 				} else {
 					i++
 				}
 			}
 		}
-	}
-	,
-	getIdleSpawn: function(room) {
-		if (room.memory.spawns.length > 0) {
-			for (var i in room.memory.spawns) {
-				var spawn_id = room.memory.spawns[i]
-				var spawn = Game.getObjectById(spawn_id)
-				if (spawn.spawning == null) {
-					return spawn
-				}
+		// structures
+		for (var structure_id in room.memory.structures) {
+			if (Game.getObjectById(structure_id) == null) {
+				delete room.memory.structures[structure_id]
 			}
 		}
-		return null
 	}
+}
+
+function is_dead(creep) {
+	return creep == null || creep.ticksToLive < 100
 }

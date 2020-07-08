@@ -17,10 +17,12 @@ module.exports = {
 			creep.memory.init = 0
 			console.log(creep.name + ' ' + creep.id)
 
-			creep.room.memory.creeps.push(creep.id)
-			if (!creep.room.memory.creeps_type.hasOwnProperty(creep.memory.type))
-				creep.room.memory.creeps_type[creep.memory.type] = []
-			creep.room.memory.creeps_type[creep.memory.type].push(creep.id)
+			// Register creep for room's database
+			var room = Game.rooms[creep.memory.room]
+			room.memory.creeps.push(creep.id)
+			if (!room.memory.creeps_type.hasOwnProperty(creep.memory.type))
+				room.memory.creeps_type[creep.memory.type] = []
+			room.memory.creeps_type[creep.memory.type].push(creep.id)
 		}
 	}
 }

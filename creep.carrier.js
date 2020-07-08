@@ -7,10 +7,11 @@ module.exports = {
 		}
 		// Withdraw
 		if (creep.memory.work == 0) {
+
 			var source = creep.room.controller.pos.findClosestByRange(FIND_STRUCTURES,
 				{filter: function(s) {
 					return s.structureType == STRUCTURE_CONTAINER
-              && s.store[RESOURCE_ENERGY] > 1000
+              && s.store[RESOURCE_ENERGY] > 500
 				}}
 			);
 			if (source) {
@@ -30,13 +31,20 @@ module.exports = {
       if (creep.memory.target == null) {
   			var target = creep.pos.findClosestByRange(FIND_STRUCTURES,
   				{filter: function(s) {
-  					return (s.structureType == STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] < 500) ||
-                   ((s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN) && s.energy < s.energyCapacity)
+  					return (s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN) && s.energy < s.energyCapacity
   				}}
   			);
   			if (target) {
           creep.memory.target = target.id
-  			}
+  			} else {
+          target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
+          {filter: function(s) {
+            return s.structureType == STRUCTURE_STORAGE
+          }})
+          if (target) {
+            creep.memory.target = target.id
+          }
+        }
       } else {
         var target = Game.getObjectById(creep.memory.target)
   			if (target) {

@@ -1,5 +1,6 @@
 module.exports = {
-  bodies: [[WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE]]
+  bodies: [[WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE],
+           [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE]]
   ,
   run: function(creep) {
 		if (creep.memory.work == null) {

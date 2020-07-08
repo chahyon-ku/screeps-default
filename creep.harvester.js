@@ -20,9 +20,6 @@ module.exports = {
 				var error = creep.harvest(source);
 				if (error == ERR_NOT_IN_RANGE) {
 					var move_error = creep.moveTo(source);
-					if (move_error == ERR_NO_PATH) {
-						creep.memory.source = null
-					}
 				}
       }
     }
@@ -33,7 +30,6 @@ module.exports = {
       creep.memory.init = 1
       var max_length = 999999
       for (var source_id in creep.room.memory.sources_creeps) {
-        console.log(source_id)
         if (max_length > creep.room.memory.sources_creeps[source_id].length) {
           max_length = creep.room.memory.sources_creeps[source_id].length
           creep.memory.source = source_id
